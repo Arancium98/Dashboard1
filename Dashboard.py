@@ -60,26 +60,24 @@ df = DataFormatting(df)
 df = CreateColumns(df)
 
 
-
-print(df.head)      
-
-
 st.set_page_config(
     page_title="Dashboard",
     page_icon="🐟",
+    layout="wide"
 
 )
+
+col1, col2 = st.columns([1,1])
 
 
 # Answering Business Questions
 
+# Q1 :  What was the best month for sales? How much was earned that month?
+
 
 Sells = df.groupby('month')['Total Price'].sum().sort_values(ascending=False)
 
-# Convert 'Sells' Series to a DataFrame
 Sells_df = pd.DataFrame({'Total Price': Sells})
-
-# Reset the index if needed
 Sells_df.reset_index(inplace=True)
 
 Months = px.bar(Sells_df
@@ -88,4 +86,30 @@ Months = px.bar(Sells_df
              title="Total Sales Per Month",
              )
 Months.update_xaxes(nticks=24)
-st.plotly_chart(Months, theme="streamlit")
+
+with col1:
+    st.plotly_chart(Months, theme="streamlit")
+
+
+
+# Q2 : What city had the highest number of sales?
+
+
+desired_columns = df.select_dtypes(include=[int, float, object])
+dfsum_city = desired_columns.groupby(['City']).sum()
+dfsum_city.reset_index(inplace=True)
+
+Prices = px.bar(dfsum_city
+             ,x="City",
+             y="Total Price",
+             title="Total Sales Per City",
+             )
+Prices.update_xaxes(nticks=24)
+
+with col2:
+    st.plotly_chart(Prices, theme="streamlit")
+    
+
+
+    
+
