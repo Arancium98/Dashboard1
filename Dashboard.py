@@ -93,6 +93,7 @@ duplicates_head = duplicates['Sold Together'].value_counts().head(10)
 
 ## Q1
 
+most_sales_month = Sells_df['Total Price'].idxmax()
 Months = px.bar(Sells_df
              ,x="month",
              y="Total Price",
@@ -100,7 +101,11 @@ Months = px.bar(Sells_df
              width=750,
              height=500
              )
+Months.update_traces(marker_color=['royalblue' if x == most_sales_month else 'grey' for x in Sells_df.index])
 Months.update_xaxes(nticks=24)
+
+
+
 
 ## Q2 
 
