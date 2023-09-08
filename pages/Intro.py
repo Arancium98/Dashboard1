@@ -31,8 +31,8 @@ st.write("""
          
          1) What was the best month for sales? How much was earned that month?
          2) What city had the highest number of sales?
-         3) What products are most often sold together?
-         4) What product sold the most?
+         3) What product sold the most?
+         4) What products are most often sold together?
          
          """)
 
