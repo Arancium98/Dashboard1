@@ -10,7 +10,6 @@ st.set_page_config(
     )
 
 
-st.markdown(css, unsafe_allow_html=True)
 
 st.write("# Analysis Dashboard")
 st.sidebar.success("Select a page above.")
