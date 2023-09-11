@@ -19,6 +19,8 @@ def DataFormatting(df):
     df['day'] = df['Order Date'].dt.day
     df['month'] = df['Order Date'].dt.month
     df['year'] = df['Order Date'].dt.year    
+    df['hour'] = df['Order Date'].dt.hour
+
     
     df['Quantity Ordered'] = df['Quantity Ordered'].astype(int)
     df['Price Each'] = df['Price Each'].astype(float)
@@ -44,13 +46,11 @@ df = DataCleaning(df)
 df = DataFormatting(df)
 df = CreateColumns(df)
 
-
 st.set_page_config(
     page_title="Dashboard",
-    page_icon="🐟",
-    layout="wide"
+    page_icon="🐄",
+    layout="wide")
 
-)
 
 st.markdown("<h1 style='text-align: center; color: grey;'>Sales Analysis Dashboard</h1>", unsafe_allow_html=True)
 
@@ -93,7 +93,8 @@ duplicates_head = duplicates['Sold Together'].value_counts().head(10)
 
 ## Q1
 
-most_sales_month = Sells_df['Total Price'].idxmax()
+top_three_months = Sells_df.nlargest(3, 'Total Price')
+
 Months = px.bar(Sells_df
              ,x="month",
              y="Total Price",
@@ -101,7 +102,12 @@ Months = px.bar(Sells_df
              width=750,
              height=500
              )
-Months.update_traces(marker_color=['royalblue' if x == most_sales_month else 'grey' for x in Sells_df.index])
+
+Months.update_traces(marker_color=np.where(Sells_df['month'] == top_three_months.iloc[0]['month'], 'gold',
+                                           np.where(Sells_df['month'] == top_three_months.iloc[1]['month'], 'silver',
+                                                    np.where(Sells_df['month'] == top_three_months.iloc[2]['month'], 'orange',
+                                                             'royalblue'))))
+
 Months.update_xaxes(nticks=24)
 
 
@@ -115,9 +121,11 @@ Prices = px.bar(sum_city,
              y="Total Price",
              title="Total Sales Per City",
              width=750,
-             height=500
+             height=500,
+             color="Total Price",
              )
 Prices.update_xaxes(nticks=24)
+
 
 ## Q3
 
@@ -132,15 +140,16 @@ QProducs.update_layout(yaxis=dict(autorange="reversed"))
 
 
 # Columns values.
+top_months = [int(top_three_months.iloc[i]['month']) for i in range(3)]
 
 with col1:
     st.plotly_chart(Months, theme="streamlit")
-    st.caption('This is a string that explains something above.')
+    st.caption(f"The best 3 months for sales are: {top_months[0]}, {top_months[1]}, {top_months[2]}")
     st.plotly_chart(QProducs, theme="streamlit")
     
     
 with col2:
     st.plotly_chart(Prices, theme="streamlit")
-    st.caption('This is a string that explains something above.')
+    st.write('Most often sold together')
     st.dataframe(duplicates_head)
     
