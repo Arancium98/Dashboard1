@@ -9,6 +9,16 @@ st.set_page_config(
     page_icon="🐄",
     initial_sidebar_state="collapsed",)
 
+css = '''
+<style>
+    [data-testid="stSidebar"]{
+        min-width: 400px;
+        max-width: 400px;
+    }
+</style>
+'''
+st.markdown(css, unsafe_allow_html=True)
+
 st.write("# Analysis Dashboard")
 st.sidebar.success("Select a page above.")
 
